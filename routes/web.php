@@ -14,3 +14,5 @@
 Route::get('/', function () {
     return view('welcome');
 });
+
+Route::get('our_backup_database','HomeController@index')->name('our_backup_database');

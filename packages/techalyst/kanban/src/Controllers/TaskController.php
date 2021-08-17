@@ -26,7 +26,7 @@ class TaskController extends Controller
                 foreach ($board->activeitems as $item){
                     $itemArr[] = [
                         'id' => $item->item_prefixed_id,
-                        'title' => view('kanban::task.item')->with('model',$item)->render(),
+                        'title' => view('item')->with('model',$item)->render(),
                         'taskname' => $item->taskname,
                         'remark' => $item->remark,
                         'name' => $item->name,
@@ -154,8 +154,8 @@ class TaskController extends Controller
             'boardId' => 'required|exists:'.config('kanban.database_connection').'.kanban_task_board,id,deleted_at,NULL',
             'taskname' => 'required|max:255',
             'remark' => 'required|max:2000',
-            'name' => 'required|max:255',
-            'gender' => 'required',
+            //'name' => 'required|max:255',
+            //'gender' => 'required',
             'phone' => 'max:20',
             'email' => 'max:255',
         ];
@@ -189,7 +189,7 @@ class TaskController extends Controller
             $model->save();
 
             $model->item_prefixed_id = 'item'.$model->id;
-            $model->rendered_html = view('kanban::task.item')->with('model',$model)->render();
+            $model->rendered_html = view('item')->with('model',$model)->render();
             $model->save();
 
             $boardId = (int) $request->input('boardId');
@@ -294,7 +294,8 @@ class TaskController extends Controller
             $model->remark = $request->input('remark');
             $model->phone = $request->input('phone');
             $model->email = $request->input('email');
-            $model->rendered_html = view('kanban::task.item')->with('model',$model)->render();
+           // $model->rendered_html = view('kanban::task.item')->with('model',$model)->render();
+           $model->rendered_html = view('item')->with('model',$model)->render();
             $model->save();
 
             DB::connection(config('kanban.database_connection'))->commit();
@@ -351,7 +352,7 @@ class TaskController extends Controller
             return response()->json($response,422);
         }
 
-        $viewData =  view('kanban::task.timeline')->with('item',$item)->with('boards',$item->boards()->orderBy('pivot_entered_at', 'ASC')->get())->render();
+        $viewData =  view('timeline')->with('item',$item)->with('boards',$item->boards()->orderBy('pivot_entered_at', 'ASC')->get())->render();
         $response = [
             "Status" => "Success",
             "Message" =>   $viewData
